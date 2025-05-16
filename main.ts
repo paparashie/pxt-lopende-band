@@ -1,8 +1,4 @@
-/**
- * DRV8833 motorbesturing via P0 en P1
- */
-//% color="#AA278D" weight=100 icon="\uf085"
-namespace motor {
+namespace Lopende_Band {
 
     /**
      * Laat de motor vooruit draaien
