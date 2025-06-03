@@ -85,4 +85,51 @@ namespace Lopende_Band {
     export function colorDropdown(kleur: string): string {
         return kleur
     }
+
+    function bepaalKleur(): string {
+        init()
+    
+        let rSum = 0
+        let gSum = 0
+        let bSum = 0
+    
+        for (let i = 0; i < 5; i++) {
+            const r = read16(0x16)
+            const g = read16(0x18)
+            const b = read16(0x1A)
+            rSum += r
+            gSum += g
+            bSum += b
+            basic.pause(5)
+        }
+    
+        const r = rSum / 5
+        const g = gSum / 5
+        const b = bSum / 5
+    
+        console.log(`Gemiddelde kleuren - R: ${r} G: ${g} B: ${b}`)
+    
+        if (r > g * 1.2 && r > b * 1.2) {
+            console.log("→ Kleur = ROOD")
+            return "rood"
+        }
+    
+        if (g > r * 1.2 && g > b * 1.2) {
+            console.log("→ Kleur = GROEN")
+            return "groen"
+        }
+    
+        if (b > r * 1.2 && b > g * 1.2) {
+            console.log("→ Kleur = BLAUW")
+            return "blauw"
+        }
+    
+        if (r > 100 && g > 100 && b < r * 0.6 && b < g * 0.6) {
+            console.log("→ Kleur = GEEL")
+            return "geel"
+        }
+    
+        console.log("→ Kleur = ONBEKEND")
+        return "onbekend"
+    }
 }
