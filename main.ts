@@ -48,29 +48,32 @@ namespace Lopende_Band {
         const g = gSum / 5
         const b = bSum / 5
     
-        console.log(`Gemiddelde kleuren - R: ${r} G: ${g} B: ${b}`)
+        serial.writeLine("---- Kleurmeting ----")
+        serial.writeLine("Gemiddelde R: " + r)
+        serial.writeLine("Gemiddelde G: " + g)
+        serial.writeLine("Gemiddelde B: " + b)
     
         if (r > g * 1.2 && r > b * 1.2) {
-            console.log("→ Kleur = ROOD")
+            serial.writeLine("→ Kleur: ROOD")
             return "rood"
         }
     
         if (g > r * 1.2 && g > b * 1.2) {
-            console.log("→ Kleur = GROEN")
+            serial.writeLine("→ Kleur: GROEN")
             return "groen"
         }
     
         if (b > r * 1.2 && b > g * 1.2) {
-            console.log("→ Kleur = BLAUW")
+            serial.writeLine("→ Kleur: BLAUW")
             return "blauw"
         }
     
         if (r > 100 && g > 100 && b < r * 0.6 && b < g * 0.6) {
-            console.log("→ Kleur = GEEL")
+            serial.writeLine("→ Kleur: GEEL")
             return "geel"
         }
     
-        console.log("→ Kleur = ONBEKEND")
+        serial.writeLine("→ Kleur: ONBEKEND")
         return "onbekend"
     }
 
