@@ -21,7 +21,7 @@ namespace Lopende_Band {
     /**
      * Stopt de motor
      */
-    //% block="Motor stoppen"
+    //% block="Motorrrrr stoppen"
     export function stop() {
         pins.digitalWritePin(DigitalPin.P0, 0)
         pins.digitalWritePin(DigitalPin.P14, 0)
