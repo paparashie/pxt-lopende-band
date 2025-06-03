@@ -28,10 +28,10 @@ namespace Lopende_Band {
     }
     
     
-    let i2cAddr = 0x29
-    let isInit = false
+    export let i2cAddr = 0x29
+    export let isInit = false
 
-    function init() {
+    export function init() {
         if (isInit) return
         pins.i2cWriteBuffer(i2cAddr, pins.createBufferFromArray([0x80 | 0x00, 0x01]))
         basic.pause(10)
@@ -39,7 +39,7 @@ namespace Lopende_Band {
         isInit = true
     }
 
-    function read16(reg: number): number {
+    export function read16(reg: number): number {
         pins.i2cWriteNumber(i2cAddr, 0x80 | reg, NumberFormat.UInt8BE)
         return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt16LE)
     }
