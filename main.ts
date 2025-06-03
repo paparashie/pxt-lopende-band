@@ -78,6 +78,7 @@ namespace Lopende_Band {
      */
     //% group="Kleurdetectie"
     //% block="Gemeten kleur"
+    //% blockCombine
     export function gemetenKleur(): string {
         return getColor()
     }
