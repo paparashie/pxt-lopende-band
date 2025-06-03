@@ -72,4 +72,13 @@ namespace Lopende_Band {
     export function colorDropdown(kleur: string): string {
         return kleur
     }
+
+     /**
+     * Geeft de gemeten kleur terug als tekst (rood, groen, blauw of onbekend)
+     */
+    //% group="Kleurdetectie"
+    //% block="Gemeten kleur"
+    export function gemetenKleur(): string {
+        return getColor()
+    }
 }
