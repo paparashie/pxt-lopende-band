@@ -27,35 +27,33 @@ namespace Lopende_Band {
         pins.digitalWritePin(DigitalPin.P14, 0)
     }
 
-        let i2cAddr = 0x29
-    let isInit = false
-
-    function init() {
-        if (isInit) return
-        pins.i2cWriteBuffer(i2cAddr, pins.createBufferFromArray([0x80 | 0x00, 0x01]))
-        basic.pause(10)
-        pins.i2cWriteBuffer(i2cAddr, pins.createBufferFromArray([0x80 | 0x00, 0x03]))
-        isInit = true
-    }
-
-    function read16(reg: number): number {
-        pins.i2cWriteNumber(i2cAddr, 0x80 | reg, NumberFormat.UInt8BE)
-        return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt16LE)
-    }
-
-    function bepaalKleur(): string {
+        function bepaalKleur(): string {
         init()
-        const r = read16(0x16)
-        const g = read16(0x18)
-        const b = read16(0x1A)
-        if (r > g && r > b) return "rood"
-        if (g > r && g > b) return "groen"
-        if (b > r && b > g) return "blauw"
+
+        let rSum = 0
+        let gSum = 0
+        let bSum = 0
+
+        for (let i = 0; i < 5; i++) {
+            rSum += read16(0x16)
+            gSum += read16(0x18)
+            bSum += read16(0x1A)
+            basic.pause(5)
+        }
+
+        const r = rSum / 5
+        const g = gSum / 5
+        const b = bSum / 5
+
+        if (r > g * 1.2 && r > b * 1.2) return "rood"
+        if (g > r * 1.2 && g > b * 1.2) return "groen"
+        if (b > r * 1.2 && b > g * 1.2) return "blauw"
+        if (r > 100 && g > 100 && b < r * 0.6 && b < g * 0.6) return "geel"
         return "onbekend"
     }
 
     /**
-     * Toont de gemeten kleur op het scherm: R, G, B of X
+     * Toont de gemeten kleur op het scherm: R, G, B, Y of X
      */
     //% group="Kleurdetectie"
     //% block="Toon kleur"
@@ -65,6 +63,7 @@ namespace Lopende_Band {
         if (kleur == "rood") teken = "R"
         else if (kleur == "groen") teken = "G"
         else if (kleur == "blauw") teken = "B"
+        else if (kleur == "geel") teken = "Y"
         basic.showString(teken)
     }
 
