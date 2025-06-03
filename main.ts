@@ -44,7 +44,43 @@ namespace Lopende_Band {
         return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt16LE)
     }
 
-    function bepaalKleur(): string {
+   
+
+    /**
+     * Toont de gemeten kleur op het scherm: R, G, B, Y of X
+     */
+    //% group="Kleurdetectie"
+    //% block="Toon kleur"
+    export function toonKleur() {
+        const kleur = bepaalKleur()
+        let teken = "X"
+        if (kleur == "rood") teken = "R"
+        else if (kleur == "groen") teken = "G"
+        else if (kleur == "blauw") teken = "B"
+        else if (kleur == "geel") teken = "Y"
+        basic.showString(teken)
+    }
+
+    /**
+     * Geeft true als de kleur overeenkomt met de gekozen optie
+     */
+    //% group="Kleurdetectie"
+    //% block="Kleur is %kleur"
+    //% kleur.shadow="colorDropdown"
+    export function kleurIs(kleur: string): boolean {
+        return bepaalKleur() == kleur
+    }
+
+    /**
+     * Dropdown met beschikbare kleuren
+     */
+    //% blockId=colorDropdown block="%kleur"
+    //% blockHidden=true
+    export function colorDropdown(kleur: string): string {
+        return kleur
+    }
+
+     function bepaalKleur(): string {
         init()
     
         let rSum = 0
@@ -92,40 +128,6 @@ namespace Lopende_Band {
     
         serial.writeLine("→ Kleur: ONBEKEND")
         return "onbekend"
-    }
-
-    /**
-     * Toont de gemeten kleur op het scherm: R, G, B, Y of X
-     */
-    //% group="Kleurdetectie"
-    //% block="Toon kleur"
-    export function toonKleur() {
-        const kleur = bepaalKleur()
-        let teken = "X"
-        if (kleur == "rood") teken = "R"
-        else if (kleur == "groen") teken = "G"
-        else if (kleur == "blauw") teken = "B"
-        else if (kleur == "geel") teken = "Y"
-        basic.showString(teken)
-    }
-
-    /**
-     * Geeft true als de kleur overeenkomt met de gekozen optie
-     */
-    //% group="Kleurdetectie"
-    //% block="Kleur is %kleur"
-    //% kleur.shadow="colorDropdown"
-    export function kleurIs(kleur: string): boolean {
-        return bepaalKleur() == kleur
-    }
-
-    /**
-     * Dropdown met beschikbare kleuren
-     */
-    //% blockId=colorDropdown block="%kleur"
-    //% blockHidden=true
-    export function colorDropdown(kleur: string): string {
-        return kleur
     }
 
     
