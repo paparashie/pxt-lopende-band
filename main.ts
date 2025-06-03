@@ -26,6 +26,23 @@ namespace Lopende_Band {
         pins.digitalWritePin(DigitalPin.P0, 0)
         pins.digitalWritePin(DigitalPin.P14, 0)
     }
+    
+    
+    let i2cAddr = 0x29
+    let isInit = false
+
+    function init() {
+        if (isInit) return
+        pins.i2cWriteBuffer(i2cAddr, pins.createBufferFromArray([0x80 | 0x00, 0x01]))
+        basic.pause(10)
+        pins.i2cWriteBuffer(i2cAddr, pins.createBufferFromArray([0x80 | 0x00, 0x03]))
+        isInit = true
+    }
+
+    function read16(reg: number): number {
+        pins.i2cWriteNumber(i2cAddr, 0x80 | reg, NumberFormat.UInt8BE)
+        return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt16LE)
+    }
 
     function bepaalKleur(): string {
         init()
