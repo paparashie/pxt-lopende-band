@@ -27,7 +27,7 @@ namespace Lopende_Band {
         pins.digitalWritePin(DigitalPin.P14, 0)
     }
 
-    let i2cAddr = 0x29
+        let i2cAddr = 0x29
     let isInit = false
 
     function init() {
@@ -43,7 +43,7 @@ namespace Lopende_Band {
         return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt16LE)
     }
 
-    function getColor(): string {
+    function bepaalKleur(): string {
         init()
         const r = read16(0x16)
         const g = read16(0x18)
@@ -55,31 +55,35 @@ namespace Lopende_Band {
     }
 
     /**
-     * Controleert of de gemeten kleur overeenkomt met de gekozen kleur.
+     * Toont de gemeten kleur op het scherm: R, G, B of X
+     */
+    //% group="Kleurdetectie"
+    //% block="Toon kleur"
+    export function toonKleur() {
+        const kleur = bepaalKleur()
+        let teken = "X"
+        if (kleur == "rood") teken = "R"
+        else if (kleur == "groen") teken = "G"
+        else if (kleur == "blauw") teken = "B"
+        basic.showString(teken)
+    }
+
+    /**
+     * Geeft true als de kleur overeenkomt met de gekozen optie
      */
     //% group="Kleurdetectie"
     //% block="Kleur is %kleur"
     //% kleur.shadow="colorDropdown"
     export function kleurIs(kleur: string): boolean {
-        return getColor() == kleur
+        return bepaalKleur() == kleur
     }
 
     /**
-     * Kleurkeuze dropdown voor blok 'Kleur is'.
+     * Dropdown met beschikbare kleuren
      */
     //% blockId=colorDropdown block="%kleur"
     //% blockHidden=true
     export function colorDropdown(kleur: string): string {
         return kleur
-    }
-
-     /**
-     * Geeft de gemeten kleur terug als tekst (rood, groen, blauw of onbekend)
-     */
-    //% group="Kleurdetectie"
-    //% block="Gemeten kleur"
-    //% blockCombine
-    export function gemetenKleur(): string {
-        return getColor()
     }
 }
