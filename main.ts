@@ -87,7 +87,7 @@ namespace Lopende_Band {
         let gSum = 0
         let bSum = 0
     
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 10; i++) {
             const r = read16(0x16)
             const g = read16(0x18)
             const b = read16(0x1A)
@@ -97,9 +97,9 @@ namespace Lopende_Band {
             basic.pause(5)
         }
     
-        const r = rSum / 5
-        const g = gSum / 5
-        const b = bSum / 5
+        const r = rSum / 10
+        const g = gSum / 10
+        const b = bSum / 10
     
         serial.writeLine("---- Kleurmeting ----")
         serial.writeLine("Gemiddelde R: " + r)
