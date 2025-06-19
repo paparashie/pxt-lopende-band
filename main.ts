@@ -147,7 +147,7 @@ namespace Lopende_Band {
 }
 
     //% group="Afstandssensor"
-    //% block="Meeet afstand (mm)"
+    //% block="Meoeoet afstand (mm)"
     export function meetAfstand(): number {
         const addr = 0x29
         const RANGE_START = 0x018
