@@ -89,18 +89,60 @@ namespace Lopende_Band {
 
     let vl6180xGeinitialiseerd = false
 
-    function initVL6180X() {
-        const addr = 0x29
-        pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE)
-        const id = pins.i2cReadNumber(addr, NumberFormat.UInt8BE)
-        if (id != 0xB4) {
-            serial.writeLine("→ TOF sensor niet gevonden.")
-            return
-        }
-        // Hier zou init-script van STMicro komen (vereenvoudigd hier)
-        vl6180xGeinitialiseerd = true
-        serial.writeLine("→ VL6180X geïnitialiseerd")
+   function initVL6180X() {
+    const addr = 0x29
+
+    // Quick check of sensor aanwezig is
+    pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE)
+    const id = pins.i2cReadNumber(addr, NumberFormat.UInt8BE)
+    if (id != 0xB4) {
+        serial.writeLine("→ TOF sensor niet gevonden")
+        return
     }
+
+    // ST Application Note standaardregisters
+    const inits: [number, number][] = [
+        [0x0207, 0x01],
+        [0x0208, 0x01],
+        [0x0096, 0x00],
+        [0x0097, 0xfd],
+        [0x00e3, 0x00],
+        [0x00e4, 0x04],
+        [0x00e5, 0x02],
+        [0x00e6, 0x01],
+        [0x00e7, 0x03],
+        [0x00f5, 0x02],
+        [0x00d9, 0x05],
+        [0x00db, 0xce],
+        [0x00dc, 0x03],
+        [0x00dd, 0xf8],
+        [0x009f, 0x00],
+        [0x00a3, 0x3c],
+        [0x00b7, 0x00],
+        [0x00bb, 0x3c],
+        [0x00b2, 0x09],
+        [0x00ca, 0x09],
+        [0x0198, 0x01],
+        [0x01b0, 0x17],
+        [0x01ad, 0x00],
+        [0x00ff, 0x05],
+        [0x0100, 0x05],
+        [0x0199, 0x05],
+        [0x01a6, 0x1b],
+        [0x01ac, 0x3e],
+        [0x01a7, 0x1f],
+        [0x0030, 0x00]
+    ]
+
+    for (let [reg, val] of inits) {
+        pins.i2cWriteBuffer(addr, pins.createBufferFromArray([
+            reg >> 8, reg & 0xff, val
+        ]))
+    }
+
+    vl6180xGeinitialiseerd = true
+    serial.writeLine("→ VL6180X succesvol geïnitialiseerd")
+}
 
     //% group="Afstandssensor"
     //% block="Meet afstand (mm)"
