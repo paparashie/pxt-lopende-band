@@ -1,35 +1,29 @@
 namespace Lopende_Band {
 
-    /**
-     * Laat de motor vooruit draaien
-     */
+    // === MOTOR ===
+
     //% block="Motor vooruit draaien"
     export function vooruit() {
         pins.digitalWritePin(DigitalPin.P0, 1)
         pins.digitalWritePin(DigitalPin.P14, 0)
     }
 
-    /**
-     * Laat de motor achteruit draaien
-     */
     //% block="Motor achteruit draaien"
     export function achteruit() {
         pins.digitalWritePin(DigitalPin.P0, 0)
         pins.digitalWritePin(DigitalPin.P14, 1)
     }
 
-    /**
-     * Stopt de motor
-     */
-    //% block="Motorrrrr stoppen"
+    //% block="Motor stoppen"
     export function stop() {
         pins.digitalWritePin(DigitalPin.P0, 0)
         pins.digitalWritePin(DigitalPin.P14, 0)
     }
-    
-    
-    export let i2cAddr = 0x29
-    export let isInit = false
+
+    // === KLEURSENSOR (TCS34725) ===
+
+    let i2cAddr = 0x29
+    let isInit = false
 
     export function init() {
         if (isInit) return
@@ -44,26 +38,40 @@ namespace Lopende_Band {
         return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt16LE)
     }
 
-   
+    function bepaalKleur(): string {
+        init()
+        let rSum = 0, gSum = 0, bSum = 0
+        for (let i = 0; i < 10; i++) {
+            rSum += read16(0x16)
+            gSum += read16(0x18)
+            bSum += read16(0x1A)
+            basic.pause(5)
+        }
+        const r = rSum / 10
+        const g = gSum / 10
+        const b = bSum / 10
 
-    /**
-     * Toont de gemeten kleur op het scherm: R, G, B, Y of X
-     */
+        serial.writeLine("---- Kleurmeting ----")
+        serial.writeLine("R: " + r + " G: " + g + " B: " + b)
+
+        if (r > g * 1.2 && r > b * 1.2) return "rood"
+        if (g > r * 1.2 && g > b * 1.2) return "groen"
+        if (b > r * 1.2 && b > g * 1.2) return "blauw"
+        if (r > 100 && g > 100 && b < r * 0.6 && b < g * 0.6) return "geel"
+        return "onbekend"
+    }
+
     //% group="Kleurdetectie"
     //% block="Toon kleur"
     export function toonKleur() {
         const kleur = bepaalKleur()
-        let teken = "X"
-        if (kleur == "rood") teken = "R"
-        else if (kleur == "groen") teken = "G"
-        else if (kleur == "blauw") teken = "B"
-        else if (kleur == "geel") teken = "Y"
+        const teken = kleur == "rood" ? "R" :
+                      kleur == "groen" ? "G" :
+                      kleur == "blauw" ? "B" :
+                      kleur == "geel" ? "Y" : "X"
         basic.showString(teken)
     }
 
-    /**
-     * Geeft true als de kleur overeenkomt met de gekozen optie
-     */
     //% group="Kleurdetectie"
     //% block="Kleur is %kleur"
     //% kleur.shadow="colorDropdown"
@@ -71,82 +79,42 @@ namespace Lopende_Band {
         return bepaalKleur() == kleur
     }
 
-    /**
-     * Dropdown met beschikbare kleuren
-     */
     //% blockId=colorDropdown block="%kleur"
     //% blockHidden=true
     export function colorDropdown(kleur: string): string {
         return kleur
     }
 
-     function bepaalKleur(): string {
-        init()
-    
-        let rSum = 0
-        let gSum = 0
-        let bSum = 0
-    
-        for (let i = 0; i < 10; i++) {
-            const r = read16(0x16)
-            const g = read16(0x18)
-            const b = read16(0x1A)
-            rSum += r
-            gSum += g
-            bSum += b
-            basic.pause(5)
+    // === AFSTANDSSENSOR (VL6180X) ===
+
+    let vl6180xGeinitialiseerd = false
+
+    function initVL6180X() {
+        const addr = 0x29
+        pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE)
+        const id = pins.i2cReadNumber(addr, NumberFormat.UInt8BE)
+        if (id != 0xB4) {
+            serial.writeLine("→ TOF sensor niet gevonden.")
+            return
         }
-    
-        const r = rSum / 10
-        const g = gSum / 10
-        const b = bSum / 10
-    
-        serial.writeLine("---- Kleurmeting ----")
-        serial.writeLine("Gemiddelde R: " + r)
-        serial.writeLine("Gemiddelde G: " + g)
-        serial.writeLine("Gemiddelde B: " + b)
-    
-        if (r > g * 1.2 && r > b * 1.2) {
-            serial.writeLine("→ Kleur: ROOD")
-            return "rood"
-        }
-    
-        if (g > r * 1.2 && g > b * 1.2) {
-            serial.writeLine("→ Kleur: GROEN")
-            return "groen"
-        }
-    
-        if (b > r * 1.2 && b > g * 1.2) {
-            serial.writeLine("→ Kleur: BLAUW")
-            return "blauw"
-        }
-    
-        if (r > 100 && g > 100 && b < r * 0.6 && b < g * 0.6) {
-            serial.writeLine("→ Kleur: GEEL")
-            return "geel"
-        }
-    
-        serial.writeLine("→ Kleur: ONBEKEND")
-        return "onbekend"
+        // Hier zou init-script van STMicro komen (vereenvoudigd hier)
+        vl6180xGeinitialiseerd = true
+        serial.writeLine("→ VL6180X geïnitialiseerd")
     }
 
-        /**
-     * Meet afstand in millimeters met de VL6180X TOF sensor
-     */
     //% group="Afstandssensor"
     //% block="Meet afstand (mm)"
     export function meetAfstand(): number {
-        const VL6180X_ADDR = 0x29
+        const addr = 0x29
         const RANGE_START = 0x018
         const RANGE_RESULT = 0x062
 
-        // Start meting
-        pins.i2cWriteNumber(VL6180X_ADDR, RANGE_START, NumberFormat.UInt8BE)
-        basic.pause(10)
+        if (!vl6180xGeinitialiseerd) initVL6180X()
 
-        // Lees resultaat
-        pins.i2cWriteNumber(VL6180X_ADDR, RANGE_RESULT, NumberFormat.UInt8BE)
-        let afstand = pins.i2cReadNumber(VL6180X_ADDR, NumberFormat.UInt8BE)
+        pins.i2cWriteNumber(addr, RANGE_START, NumberFormat.UInt8BE)
+        basic.pause(10)
+        pins.i2cWriteNumber(addr, RANGE_RESULT, NumberFormat.UInt8BE)
+        const afstand = pins.i2cReadNumber(addr, NumberFormat.UInt8BE)
 
         serial.writeLine("Afstand (mm): " + afstand)
         return afstand
