@@ -134,7 +134,9 @@ namespace Lopende_Band {
         [0x0030, 0x00]
     ]
 
-    for (let [reg, val] of inits) {
+    for (let i = 0; i < inits.length; i++) {
+        let reg = inits[i][0]
+        let val = inits[i][1]
         pins.i2cWriteBuffer(addr, pins.createBufferFromArray([
             reg >> 8, reg & 0xff, val
         ]))
