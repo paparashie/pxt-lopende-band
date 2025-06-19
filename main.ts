@@ -2,18 +2,19 @@ namespace Lopende_Band {
 
     // === MOTOR ===
 
+    //% group="Motor"
     //% block="Motor vooruit draaien"
     export function vooruit() {
         pins.digitalWritePin(DigitalPin.P0, 1)
         pins.digitalWritePin(DigitalPin.P14, 0)
     }
-
+    //% group="Motor"
     //% block="Motor achteruit draaien"
     export function achteruit() {
         pins.digitalWritePin(DigitalPin.P0, 0)
         pins.digitalWritePin(DigitalPin.P14, 1)
     }
-
+    //% group="Motor"
     //% block="Motor stoppen"
     export function stop() {
         pins.digitalWritePin(DigitalPin.P0, 0)
