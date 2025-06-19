@@ -130,5 +130,25 @@ namespace Lopende_Band {
         return "onbekend"
     }
 
-    
+        /**
+     * Meet afstand in millimeters met de VL6180X TOF sensor
+     */
+    //% group="Afstandssensor"
+    //% block="Meet afstand (mm)"
+    export function meetAfstand(): number {
+        const VL6180X_ADDR = 0x29
+        const RANGE_START = 0x018
+        const RANGE_RESULT = 0x062
+
+        // Start meting
+        pins.i2cWriteNumber(VL6180X_ADDR, RANGE_START, NumberFormat.UInt8BE)
+        basic.pause(10)
+
+        // Lees resultaat
+        pins.i2cWriteNumber(VL6180X_ADDR, RANGE_RESULT, NumberFormat.UInt8BE)
+        let afstand = pins.i2cReadNumber(VL6180X_ADDR, NumberFormat.UInt8BE)
+
+        serial.writeLine("Afstand (mm): " + afstand)
+        return afstand
+    }
 }
