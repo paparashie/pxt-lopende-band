@@ -188,10 +188,6 @@ namespace Lopende_Band {
         if (afstand > maxHoogte || afstand <= 0) return 0 // buiten meetbereik
         return hoogte
     }
-    //% block="TEST1ewer23"
-    export function testfunctie(): void {
-        basic.showString("test")
-    }
     
     //% block="wewewewewTEST1ewer23"
     export function testfunctie(): void {
