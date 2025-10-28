@@ -189,8 +189,4 @@ namespace Lopende_Band {
         return hoogte
     }
     
-    //% block="wewewewewTEST1ewer23"
-    export function testfunctie(): void {
-        basic.showString("test")
-    }
 }
