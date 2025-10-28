@@ -182,4 +182,8 @@ namespace Lopende_Band {
         serial.writeLine("Hoogte (cm): " + afstand_cm)
         return afstand_cm
     }
+    //% block="TEST123"
+    export function testfunctie(): void {
+        basic.showString("test")
+    }
 }
