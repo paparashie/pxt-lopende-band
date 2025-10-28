@@ -168,7 +168,7 @@ namespace Lopende_Band {
     //% block="Meet hoogte (cm)"
     export function meetHoogte(): number {
         const triggerPin = DigitalPin.P1
-        const echoPin = DigitalPin.P2
+        const echoPin = DigitalPin.P15
 
         pins.setPull(echoPin, PinPullMode.PullNone)
         pins.digitalWritePin(triggerPin, 0)
