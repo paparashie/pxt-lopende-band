@@ -164,7 +164,7 @@ namespace Lopende_Band {
     //     serial.writeLine("Afstand (mm): " + afstand)
     //     return afstand
     // }
-    //% group="Afstandssensor"
+    //% group="Afstandssensor" 
     //% block="Meet hoogte (cm)"
     export function meetHoogte(): number {
         const sigPin = DigitalPin.P1
