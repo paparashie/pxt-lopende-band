@@ -165,7 +165,7 @@ namespace Lopende_Band {
     //     return afstand
     // }
     //% group="Afstandssensor"
-    //% block="Meeet hoogte (cm)"
+    //% block="Meet hoogte (cm)"
     export function meetHoogte(): number {
         const sigPin = DigitalPin.P1
 
@@ -189,7 +189,7 @@ namespace Lopende_Band {
     export function Nieuwecuntiexmooooomnnn(): void {
         basic.showString("test")
     }
-    //% block="TEST1223233"
+    //% block="TEST1dddddddd223233"
     export function poeoeoeooe(): void {
         basic.showString("test")
     }
