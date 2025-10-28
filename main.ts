@@ -147,21 +147,40 @@ namespace Lopende_Band {
     serial.writeLine("→ VL6180X succesvol geïnitialiseerd")
 }
 
+    // //% group="Afstandssensor"
+    // //% block="Meet afstand (mm)"
+    // export function meetAfstand(): number {
+    //     const addr = 0x29
+    //     const RANGE_START = 0x018
+    //     const RANGE_RESULT = 0x062
+
+    //     if (!vl6180xGeinitialiseerd) initVL6180X()
+
+    //     pins.i2cWriteNumber(addr, RANGE_START, NumberFormat.UInt8BE)
+    //     basic.pause(10)
+    //     pins.i2cWriteNumber(addr, RANGE_RESULT, NumberFormat.UInt8BE)
+    //     const afstand = pins.i2cReadNumber(addr, NumberFormat.UInt8BE)
+
+    //     serial.writeLine("Afstand (mm): " + afstand)
+    //     return afstand
+    // }
     //% group="Afstandssensor"
-    //% block="Meet afstand (mm)"
-    export function meetAfstand(): number {
-        const addr = 0x29
-        const RANGE_START = 0x018
-        const RANGE_RESULT = 0x062
+    //% block="Meet hoogte (cm)"
+    export function meetHoogte(): number {
+        const triggerPin = DigitalPin.P1
+        const echoPin = DigitalPin.P2
 
-        if (!vl6180xGeinitialiseerd) initVL6180X()
+        pins.setPull(echoPin, PinPullMode.PullNone)
+        pins.digitalWritePin(triggerPin, 0)
+        control.waitMicros(2)
+        pins.digitalWritePin(triggerPin, 1)
+        control.waitMicros(10)
+        pins.digitalWritePin(triggerPin, 0)
 
-        pins.i2cWriteNumber(addr, RANGE_START, NumberFormat.UInt8BE)
-        basic.pause(10)
-        pins.i2cWriteNumber(addr, RANGE_RESULT, NumberFormat.UInt8BE)
-        const afstand = pins.i2cReadNumber(addr, NumberFormat.UInt8BE)
+        const duration = pins.pulseIn(echoPin, PulseValue.High, 25000)
+        const afstand_cm = duration / 58
 
-        serial.writeLine("Afstand (mm): " + afstand)
-        return afstand
+        serial.writeLine("Hoogte (cm): " + afstand_cm)
+        return afstand_cm
     }
 }
