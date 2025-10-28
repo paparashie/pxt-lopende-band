@@ -176,14 +176,21 @@ namespace Lopende_Band {
         control.waitMicros(10)
         pins.digitalWritePin(sigPin, 0)
 
-        const duration = pins.pulseIn(sigPin, PulseValue.High, 25000)
-        const afstand_cm = duration / 58
-
-        serial.writeLine("Hoogte (cm): " + afstand_cm)
-        return afstand_cm
-    }
+        const maxHoogte = 5.4
+        const hoogte = maxHoogte - afstand
+    
+        serial.writeLine("Afstand: " + afstand + " cm")
+        serial.writeLine("Hoogte object: " + hoogte + " cm")
+    
+        if (afstand > maxHoogte || afstand <= 0) return 0 // buiten meetbereik
+        return hoogte
+        }
     //% block="TEST123"
-    export function testfunctie(): void {
+    export function Nieuwecuntiexmooooomnnn(): void {
+        basic.showString("test")
+    }
+    //% block="TEST1223233"
+    export function poeoeoeooe(): void {
         basic.showString("test")
     }
 }
