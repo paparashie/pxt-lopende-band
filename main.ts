@@ -167,17 +167,16 @@ namespace Lopende_Band {
     //% group="Afstandssensor"
     //% block="Meet hoogte (cm)"
     export function meetHoogte(): number {
-        const triggerPin = DigitalPin.P1
-        const echoPin = DigitalPin.P15
+        const sigPin = DigitalPin.P1
 
-        pins.setPull(echoPin, PinPullMode.PullNone)
-        pins.digitalWritePin(triggerPin, 0)
+        pins.setPull(sigPin, PinPullMode.PullNone)
+        pins.digitalWritePin(sigPin, 0)
         control.waitMicros(2)
-        pins.digitalWritePin(triggerPin, 1)
+        pins.digitalWritePin(sigPin, 1)
         control.waitMicros(10)
-        pins.digitalWritePin(triggerPin, 0)
+        pins.digitalWritePin(sigPin, 0)
 
-        const duration = pins.pulseIn(echoPin, PulseValue.High, 25000)
+        const duration = pins.pulseIn(sigPin, PulseValue.High, 25000)
         const afstand_cm = duration / 58
 
         serial.writeLine("Hoogte (cm): " + afstand_cm)
