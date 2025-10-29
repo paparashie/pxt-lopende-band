@@ -168,25 +168,24 @@ namespace Lopende_Band {
     //% block="Meet hoogte (cm)"
     export function meetHoogte(): number {
         const sigPin = DigitalPin.P1
-
+    
         pins.setPull(sigPin, PinPullMode.PullNone)
         pins.digitalWritePin(sigPin, 0)
         control.waitMicros(2)
         pins.digitalWritePin(sigPin, 1)
         control.waitMicros(10)
         pins.digitalWritePin(sigPin, 0)
-
+    
         const duration = pins.pulseIn(sigPin, PulseValue.High, 25000)
         const afstand_cm = duration / 58
-
-       const maxHoogte = 5.4
-       const hoogte = maxHoogte - afstand_cm
     
-        serial.writeLine("Afstand: " + afstand + " cm")
+        const maxHoogte = 5.4
+        const hoogte = maxHoogte - afstand_cm
+    
+        serial.writeLine("Afstand: " + afstand_cm + " cm")
         serial.writeLine("Hoogte object: " + hoogte + " cm")
     
-        if (afstand > maxHoogte || afstand <= 0) return 0 // buiten meetbereik
+        if (afstand_cm > maxHoogte || afstand_cm <= 0) return 0 // buiten meetbereik
         return hoogte
-    }
-    
+    }    
 }
