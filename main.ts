@@ -188,4 +188,8 @@ namespace Lopende_Band {
         if (afstand_cm > maxHoogte || afstand_cm <= 0) return 0 // buiten meetbereik
         return hoogte
     }    
+    //% group="Afstandssensor" 
+    //% block="testtetstest haha "
+    export function huh(): number {
+    }
 }
