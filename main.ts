@@ -142,7 +142,7 @@ namespace Lopende_Band {
         const duration = pins.pulseIn(sigPin, PulseValue.High, 25000)
         const afstand_cm = duration / 58
 
-        const maxHoogte = 5.4
+        const maxHoogte = 6
         const hoogte = maxHoogte - afstand_cm
 
         serial.writeLine("Afstand: " + afstand_cm + " cm")
@@ -153,7 +153,7 @@ namespace Lopende_Band {
     }
 
     //% group="Afstandssensor"
-    //% block="Testfunctie"
+    //% block="Test functie (doet niks)"
     export function huh(): number {
         return 42
     }
