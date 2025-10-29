@@ -180,7 +180,7 @@ namespace Lopende_Band {
         const afstand_cm = duration / 58
 
        const maxHoogte = 5.4
-        const hoogte = maxHoogte - afstand
+       const hoogte = maxHoogte - afstand_cm
     
         serial.writeLine("Afstand: " + afstand + " cm")
         serial.writeLine("Hoogte object: " + hoogte + " cm")
