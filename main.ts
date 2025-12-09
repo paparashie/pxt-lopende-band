@@ -23,8 +23,47 @@ namespace Lopende_Band {
         pins.digitalWritePin(DigitalPin.P14, 0)
     }
 
-    // === KLEURSENSOR (TCS34725) ===
+    //% group="Afstandssensor"
+    //% block="Meet hoogte (cm)"
+    export function meetHoogte(): number {
+        const sigPin = DigitalPin.P1
+        const maxHoogte = 6
+        const marge = 0.5 // cm verschil toegestaan tussen 2 metingen
 
+        function meetAfstand(): number {
+            pins.setPull(sigPin, PinPullMode.PullNone)
+            pins.digitalWritePin(sigPin, 0)
+            control.waitMicros(2)
+            pins.digitalWritePin(sigPin, 1)
+            control.waitMicros(10)
+            pins.digitalWritePin(sigPin, 0)
+
+            const duration = pins.pulseIn(sigPin, PulseValue.High, 25000)
+            return duration / 58
+        }
+
+        const meting1 = meetAfstand()
+        basic.pause(100)
+        const meting2 = meetAfstand()
+
+        serial.writeLine("Meting 1: " + meting1)
+        serial.writeLine("Meting 2: " + meting2)
+        if (
+            Math.abs(meting1 - meting2) < marge &&
+            meting1 > 0 && meting1 < maxHoogte + 2 &&
+            meting2 > 0 && meting2 < maxHoogte + 2
+        ) {
+            const gemAfstand = (meting1 + meting2) / 2
+            const hoogte = maxHoogte - gemAfstand
+            serial.writeLine("Hoogte object: " + hoogte + " cm")
+            return Math.max(0, hoogte)
+        } else {
+            serial.writeLine("→ Ongeldige meting")
+            return 0
+        }
+    }
+
+    // === KLEURSENSOR (TCS34725) ===
     let i2cAddr = 0x29
     let isInit = false
 
@@ -127,34 +166,6 @@ namespace Lopende_Band {
         serial.writeLine("→ VL6180X succesvol geïnitialiseerd")
     }
 
-    //% group="Afstandssensor"
-    //% block="Meet hoogte (cm)"
-    export function meetHoogte(): number {
-        const sigPin = DigitalPin.P1
+    
 
-        pins.setPull(sigPin, PinPullMode.PullNone)
-        pins.digitalWritePin(sigPin, 0)
-        control.waitMicros(2)
-        pins.digitalWritePin(sigPin, 1)
-        control.waitMicros(10)
-        pins.digitalWritePin(sigPin, 0)
-
-        const duration = pins.pulseIn(sigPin, PulseValue.High, 25000)
-        const afstand_cm = duration / 58
-
-        const maxHoogte = 6
-        const hoogte = maxHoogte - afstand_cm
-
-        serial.writeLine("Afstand: " + afstand_cm + " cm")
-        serial.writeLine("Hoogte object: " + hoogte + " cm")
-
-        if (afstand_cm > maxHoogte || afstand_cm <= 0) return 0
-        return hoogte
-    }
-
-    //% group="Afstandssensor"
-    //% block="Test functie (doet niks)"
-    export function huh(): number {
-        return 42
-    }
 }
